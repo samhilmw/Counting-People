@@ -10,8 +10,8 @@ from counting.centroidtracker import CentroidTracker
 from counting.trackableobject import TrackableObject
 
 # Initialize the parameters
-confThreshold = 0.6  #Confidence threshold
-nmsThreshold = 0.4   #Non-maximum suppression threshold
+confThreshold = 0.3  #Confidence threshold
+nmsThreshold = 0.7   #Non-maximum suppression threshold
 inpWidth = 416       #Width of network's input image
 inpHeight = 416      #Height of network's input image
 
@@ -70,7 +70,7 @@ def drawPred(classId, conf, left, top, right, bottom):
     # Draw a center of a bounding box
     frameHeight = frame.shape[0]
     frameWidth = frame.shape[1]
-    cv.line(frame, (0, frameHeight//2 - 50), (frameWidth, frameHeight//2 - 50), (0, 255, 255), 2)
+##    cv.line(frame, (0, frameHeight//2 - 50), (frameWidth, frameHeight//2 - 50), (0, 255, 255), 2)
     cv.circle(frame,(left+(right-left)//2, top+(bottom-top)//2), 3, (0,0,255), -1)
         
 
@@ -135,7 +135,6 @@ def postprocess(frame, outs):
 def counting(objects):
     frameHeight = frame.shape[0]
     frameWidth = frame.shape[1]
-
     global totalDown
     global totalUp
 
@@ -192,11 +191,14 @@ def counting(objects):
         ("Down", totalDown),
     ]
 
-    # loop over the info tuples and draw them on our frame
-    for (i, (k, v)) in enumerate(info):
-        text = "{}: {}".format(k, v)
-        cv.putText(frame, text, (10, frameHeight - ((i * 20) + 20)),
-            cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+
+    cv.putText(frame, 'Count {}'.format(len(objects)), (10, 18),
+            cv.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+##    # loop over the info tuples and draw them on our frame
+##    for (i, (k, v)) in enumerate(info):
+##        text = "{}: {}".format(k, v)
+##        cv.putText(frame, text, (10, frameHeight - ((i * 20) + 20)),
+##            cv.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
 # Process inputs
 winName = 'Deep learning object detection in OpenCV'
@@ -224,7 +226,7 @@ while cv.waitKey(1) < 0:
     hasFrame, frame = cap.read()
     frameHeight = frame.shape[0]
     frameWidth = frame.shape[1]
-    cv.line(frame, (0, frameHeight // 2), (frameWidth, frameHeight // 2), (0, 255, 255), 2)
+##    cv.line(frame, (0, frameHeight // 2), (frameWidth, frameHeight // 2), (0, 255, 255), 2)
     
     # Stop the program if reached end of video
     if not hasFrame:
@@ -248,9 +250,9 @@ while cv.waitKey(1) < 0:
     postprocess(frame, outs)
 
     # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
-    t, _ = net.getPerfProfile()
-    label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-    cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
+##    t, _ = net.getPerfProfile()
+##    label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
+##    cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
 
     # Write the frame with the detection boxes
 
